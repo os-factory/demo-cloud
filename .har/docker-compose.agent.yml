@@ -1,0 +1,12 @@
+# Shared infrastructure — ONE instance serves all agent slots (fixed ports).
+#
+# Intentionally empty for this project: the only shared dependency is the
+# local Supabase stack (Postgres, Auth, REST, Studio, Mailpit), and the
+# Supabase CLI manages its own Docker containers directly from
+# supabase/config.toml (repo root, committed) — see setup-infra.sh. That is
+# why HARNESS_INFRA_SERVICES in harness.env is empty and setup-infra.sh never
+# runs `docker compose` against this file.
+#
+# If you add another shared external dependency (Redis, a queue, ...), add it
+# as a service here and list it in HARNESS_INFRA_SERVICES.
+services: {}

@@ -1,0 +1,32 @@
+{
+  "version": "1",
+  "generatorVersion": "0.5.0",
+  "outputDir": ".har",
+  "createdAt": "2026-08-06T11:43:04.401Z",
+  "updatedAt": "2026-08-06T11:43:04.401Z",
+  "adaptationSummary": "Configured a shared local Supabase stack (Postgres, Auth, REST, Studio, Mailpit via the Supabase CLI) as the harness's single shared dependency for all agent slots, replacing the generic per-slot Postgres+MinIO/docker-compose model. setup-infra.sh starts/resolves Supabase once via the CLI into .har/state/supabase.env (fixed ports 54321-54324), reused by every slot; docker-compose.agent.yml is now intentionally empty since the Supabase CLI manages its own containers. Added an idempotent demo login, readiness.sh (Layer 4 'agent usable' smoke: signs up a real user against the shared Auth API to prove the running frontend is wired to Supabase), a liveness-only /api/health route excluded from auth middleware, and disabled unused Supabase services (realtime/storage/edge_runtime/analytics). Rewrote harness.env, launch.sh, agent-slot.sh, agent-cli.sh, teardown.sh, verify.sh, env.template, ecosystem.agent.template.cjs, README.md, and CLAUDE.agent.md for the single-process Next.js + shared-Supabase model. Also fixed two pre-existing app issues blocking npm run lint (require()-style tailwind plugin import, eslint scanning .next/.har generated output). Verified end-to-end: launch, verify --full (typecheck+health+lint+readiness all pass), agent-cli status/url/health/psql/exec/reset-db, and teardown all work correctly against a live local Supabase stack.",
+  "profile": "default",
+  "fileChecksums": {
+    ".gitignore": "be76f72c473122ba",
+    "CLAUDE.agent.md": "9ae6fa9ce003ff85",
+    "README.md": "99964d81da1f7015",
+    "STAGES.md": "a4ac0935e883beab",
+    "agent-cli.sh": "613ee27b29a6cd7d",
+    "agent-slot.sh": "4128dc84b8a21500",
+    "attach.sh": "4755c9cfaf9abb45",
+    "docker-compose.agent.yml": "dd991b6e4bb29105",
+    "ecosystem.agent.template.cjs": "903fa9d7063e71cc",
+    "env.template": "4c9009097c2a15c0",
+    "gitignore.template": "be76f72c473122ba",
+    "harness.env": "b51cd286f701f6d7",
+    "justfile": "e7c1048680a7a28c",
+    "launch.sh": "e6e639066981d877",
+    "preflight.sh": "24912d74e170a685",
+    "provision-toolchain.sh": "18cf04bd607f3fd8",
+    "readiness.sh": "b71f494a4a6218de",
+    "setup-infra.sh": "dd7c3a0a4eddc648",
+    "stages.json": "1e17a9a0bc06b695",
+    "teardown.sh": "f1837040ef0d0cd6",
+    "verify.sh": "e34ab35e9ec6202a"
+  }
+}

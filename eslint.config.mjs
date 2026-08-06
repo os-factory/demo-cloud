@@ -10,6 +10,18 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
+  {
+    // .next is Next.js build output; .har is the agent harness (its .cjs
+    // templates/generated files are plain Node scripts, not app source).
+    // ecosystem.agent.*.config.cjs is generated per-slot at the repo root by
+    // .har/launch.sh (gitignored) — same reason.
+    ignores: [
+      ".next/**",
+      ".har/**",
+      "supabase/.temp/**",
+      "ecosystem.agent.*.config.cjs",
+    ],
+  },
   ...compat.extends("next/core-web-vitals", "next/typescript"),
 ];
 
