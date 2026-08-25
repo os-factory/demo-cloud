@@ -27,9 +27,15 @@ ENV_FILE="$(resolve_agent_env_file "$AGENT_ID" "$REPO_ROOT")" || {
 set -a
 # shellcheck source=/dev/null
 source "$ENV_FILE"
+# Shared stack credentials live in supabase.env; env.template only copies the
+# NEXT_PUBLIC_* aliases into .env.agent.*, so fall back if the raw names are unset.
+# shellcheck source=/dev/null
+[ -f "$SCRIPT_DIR/state/supabase.env" ] && source "$SCRIPT_DIR/state/supabase.env"
 set +a
 
 : "${FE_PORT:?FE_PORT missing from .env.agent.${AGENT_ID}}"
+SUPABASE_URL="${SUPABASE_URL:-${NEXT_PUBLIC_SUPABASE_URL:-}}"
+SUPABASE_PUBLISHABLE_KEY="${SUPABASE_PUBLISHABLE_KEY:-${NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:-}}"
 : "${SUPABASE_URL:?SUPABASE_URL missing — is the shared Supabase stack running? ./.har/setup-infra.sh}"
 : "${SUPABASE_PUBLISHABLE_KEY:?SUPABASE_PUBLISHABLE_KEY missing}"
 

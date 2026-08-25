@@ -66,3 +66,32 @@
     @apply bg-background text-foreground;
   }
 }
+
+.tiptap-editor {
+  @apply min-h-[16rem] px-6 py-5 text-base leading-relaxed outline-none;
+}
+
+.tiptap-editor p {
+  @apply my-2;
+}
+
+.tiptap-editor p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  @apply float-left h-0 text-muted-foreground pointer-events-none;
+}
+
+.tiptap-editor ul {
+  @apply my-2 list-disc pl-6;
+}
+
+.tiptap-editor ol {
+  @apply my-2 list-decimal pl-6;
+}
+
+.tiptap-editor strong {
+  @apply font-semibold;
+}
+
+.tiptap-editor em {
+  @apply italic;
+}

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { TutorialStep } from "./tutorial-step";
 import { CodeBlock } from "./code-block";
 
@@ -124,8 +125,15 @@ export function FetchDataSteps() {
 
       <TutorialStep title="Query Supabase data from Next.js">
         <p>
-          To create a Supabase client and query data from an Async Server
-          Component, create a new page.tsx file at{" "}
+          The notes table is already wired up. Open{" "}
+          <Link
+            href="/notes"
+            className="font-bold hover:underline text-foreground/80"
+          >
+            /notes
+          </Link>{" "}
+          to query the rows and preview them in a TipTap editor. To do the same
+          from an Async Server Component, create a new page.tsx file at{" "}
           <span className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-xs font-medium text-secondary-foreground border">
             /app/notes/page.tsx
           </span>{" "}
@@ -156,7 +164,17 @@ export function FetchDataSteps() {
       </TutorialStep>
 
       <TutorialStep title="Build in a weekend and scale to millions!">
-        <p>You&apos;re ready to launch your product to the world! 🚀</p>
+        <p>
+          You&apos;re ready to launch your product to the world! 🚀 Preview the
+          seeded notes in TipTap at{" "}
+          <Link
+            href="/notes"
+            className="font-bold hover:underline text-foreground/80"
+          >
+            /notes
+          </Link>
+          .
+        </p>
       </TutorialStep>
     </ol>
   );

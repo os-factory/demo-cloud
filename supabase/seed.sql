@@ -1,4 +1,6 @@
 -- Seed data applied after migrations on `supabase start` and `supabase db reset`.
--- This starter app only uses Supabase Auth (no custom tables), so there is
--- nothing to seed. Add INSERT statements here if you introduce tables that
--- need default/demo rows for local development.
+insert into notes (title)
+values
+  ('Today I created a Supabase project.'),
+  ('I added some data and queried it from Next.js.'),
+  ('It was awesome!');
