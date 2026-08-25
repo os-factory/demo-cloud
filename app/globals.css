@@ -95,3 +95,7 @@
 .tiptap-editor em {
   @apply italic;
 }
+
+.note-viewer-editor {
+  @apply min-h-0 px-6 py-2 text-xl leading-relaxed;
+}

@@ -1,12 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
-import { Bold, Italic, List, ListOrdered } from "lucide-react";
+import {
+  Bold,
+  Italic,
+  List,
+  ListOrdered,
+  Maximize2,
+  Share2,
+} from "lucide-react";
 
-import type { Note } from "@/lib/notes";
+import { noteViewerPath, type Note } from "@/lib/notes";
+import { ShareNoteDialog } from "@/components/notes/share-note-dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -31,10 +40,12 @@ function notesToHtml(notes: Note[]) {
 export function NotesPreview({ notes }: { notes: Note[] }) {
   const [ready, setReady] = useState(false);
   const [selectedId, setSelectedId] = useState<number | "all">("all");
-  const visibleNotes =
+  const [sharingNote, setSharingNote] = useState<Note | null>(null);
+  const selectedNote =
     selectedId === "all"
-      ? notes
-      : notes.filter((note) => note.id === selectedId);
+      ? null
+      : (notes.find((note) => note.id === selectedId) ?? null);
+  const visibleNotes = selectedNote ? [selectedNote] : notes;
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -79,15 +90,29 @@ export function NotesPreview({ notes }: { notes: Note[] }) {
             All notes
           </Button>
           {notes.map((note) => (
-            <Button
-              key={note.id}
-              type="button"
-              variant={selectedId === note.id ? "default" : "outline"}
-              className="justify-start h-auto whitespace-normal text-left"
-              onClick={() => setSelectedId(note.id)}
-            >
-              {note.title}
-            </Button>
+            <div key={note.id} className="flex items-start gap-1">
+              <Button
+                type="button"
+                variant={selectedId === note.id ? "default" : "outline"}
+                className="justify-start h-auto flex-1 whitespace-normal text-left"
+                onClick={() => setSelectedId(note.id)}
+              >
+                {note.title}
+              </Button>
+              <Link
+                href={noteViewerPath(note)}
+                className="text-xs text-muted-foreground hover:text-foreground px-1 py-2"
+              >
+                Open
+              </Link>
+              <button
+                type="button"
+                className="text-xs text-muted-foreground hover:text-foreground px-1 py-2"
+                onClick={() => setSharingNote(note)}
+              >
+                Share
+              </button>
+            </div>
           ))}
         </div>
       </aside>
@@ -127,6 +152,24 @@ export function NotesPreview({ notes }: { notes: Note[] }) {
               <span className="ml-auto text-xs text-muted-foreground px-2">
                 TipTap preview
               </span>
+              {selectedNote ? (
+                <>
+                  <Button asChild size="sm" variant="outline">
+                    <Link href={noteViewerPath(selectedNote)}>
+                      <Maximize2 />
+                      Open
+                    </Link>
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={() => setSharingNote(selectedNote)}
+                  >
+                    <Share2 />
+                    Share
+                  </Button>
+                </>
+              ) : null}
             </div>
             <EditorContent editor={editor} />
           </>
@@ -134,6 +177,12 @@ export function NotesPreview({ notes }: { notes: Note[] }) {
           <p className="tiptap-editor text-muted-foreground">Loading editor…</p>
         )}
       </div>
+      {sharingNote ? (
+        <ShareNoteDialog
+          note={sharingNote}
+          onClose={() => setSharingNote(null)}
+        />
+      ) : null}
     </div>
   );
 }
