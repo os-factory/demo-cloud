@@ -263,6 +263,18 @@ if [ -n "${HARNESS_HEALTH_CHECK_PATH:-}" ]; then
   fi
 fi
 
+# Optional: apply a factory line when launch was given task context or an
+# explicit line/profile. Never implied — switching profiles truncates the
+# shared notes tables. See .har/factory-lines/README.md.
+FACTORY_RUN="$WORK_DIR/.har/factory-lines/run.sh"
+[ -x "$FACTORY_RUN" ] || FACTORY_RUN="$SCRIPT_DIR/factory-lines/run.sh"
+if [ -f "$FACTORY_RUN" ] && [ -n "${HAR_FACTORY_LINE:-}${HAR_SEED_PROFILE:-}${HAR_TASK_CONTEXT:-}${HAR_WORK_TITLE:-}" ]; then
+  log "Running factory line from launch context..."
+  if ! bash "$FACTORY_RUN" "$AGENT_ID"; then
+    log "Warning: factory line failed (slot is still up). Re-run: ./.har/agent-cli.sh $AGENT_ID factory-line"
+  fi
+fi
+
 # Record the session in the slot registry — the source of truth for where
 # this slot's code lives (status/verify/teardown resolve through it).
 SLOT_AGENT_ID="$AGENT_ID" \

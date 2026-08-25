@@ -206,11 +206,16 @@ try { console.log(JSON.stringify(JSON.parse(d), null, 2)); } catch { console.log
     tmux attach -t "$SESSION"
     ;;
 
+  factory-line)
+    shift 2
+    exec "$SCRIPT_DIR/factory-lines/run.sh" "$AGENT_ID" "$@"
+    ;;
+
   *)
     echo "Unknown command: $COMMAND" >&2
     echo ""
     echo "Commands: status, logs [service], restart [service], psql [query],"
-    echo "          health, url, reset-db, exec <cmd>, attach"
+    echo "          health, url, reset-db, exec <cmd>, attach, factory-line"
     exit 1
     ;;
 esac

@@ -1,0 +1,26 @@
+{
+  "version": "1",
+  "defaultLine": "production-reproducibility",
+  "lines": [
+    {
+      "id": "production-reproducibility",
+      "title": "Production reproducibility",
+      "description": "Seed the app into a known fixture state so agents can reproduce production-like scenarios before working.",
+      "dir": "factory-lines/production-reproducibility",
+      "script": "factory-lines/production-reproducibility/run.sh",
+      "default": true,
+      "match": {
+        "keywords": [
+          "reproduc",
+          "seed",
+          "fixture",
+          "notes",
+          "share",
+          "profile",
+          "empty user"
+        ],
+        "priority": 10
+      }
+    }
+  ]
+}

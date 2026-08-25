@@ -20,6 +20,7 @@ This slot runs **only the primary application** (the Next.js app, `HARNESS_PRIMA
 ./.har/agent-cli.sh ${AGENT_ID} logs
 ./.har/agent-cli.sh ${AGENT_ID} health
 ./.har/agent-cli.sh ${AGENT_ID} url
+./.har/agent-cli.sh ${AGENT_ID} factory-line --list
 ```
 
 ## Credentials
@@ -37,7 +38,23 @@ Sign-up/sign-in also works for any new email — **email confirmation is disable
 - **Health** (process only, no Supabase call): `./.har/agent-cli.sh ${AGENT_ID} health` → `GET /api/health`
 - **Agent-usable smoke** (`verify --full`, or `./.har/readiness.sh ${AGENT_ID}`): confirms the running frontend is wired to Supabase (`NEXT_PUBLIC_SUPABASE_URL`/`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` reaching the app — no env-var warning banner) AND that a real sign-up against the shared Supabase Auth API returns a session.
 - **Skipped from full local Supabase dev setup**: `storage`, `realtime`, `edge_runtime`, and `analytics` are disabled in `supabase/config.toml` — this app only uses Supabase Auth, so those containers never start. Flip them back on in `supabase/config.toml` (then `supabase stop && supabase start`, or re-run `./.har/setup-infra.sh`) if you add features that need them.
-- **No custom database schema**: this starter only uses Supabase Auth (`auth.users`), so there are no app migrations/seed data. If you add tables, put migrations under `supabase/migrations/` and seed rows in `supabase/seed.sql` — both are applied automatically by `supabase start` / `supabase db reset`, not through this harness's generic migrate/seed hooks.
+- **Notes schema** lives in `supabase/migrations/`; `supabase/seed.sql` is the baseline tutorial seed. For agent work, put the app in a **named seeding profile** via the production-reproducibility factory line (see below) instead of editing seed.sql for a one-off scenario.
+- **Factory lines**: after launch, run a pipeline that matches the task. Production reproducibility is the default line — it truncates `notes` / `note_shares` on the shared Supabase and upserts fixture users.
+
+  | Profile | When to use | Login |
+  |---------|-------------|-------|
+  | `empty-user` | Empty list, onboarding, first-run | `empty-user@example.com` |
+  | `user-with-notes` | List / preview / editor (default) | `notes-owner@example.com` |
+  | `user-with-shared-notes` | Share dialog, recipient, viewer link | `notes-owner@example.com` (recipient: `notes-recipient@example.com`) |
+
+  Password for every fixture user: `agent-demo-password-123`.
+
+  ```bash
+  ./.har/agent-cli.sh ${AGENT_ID} factory-line --context "<the user task>"
+  ./.har/agent-cli.sh ${AGENT_ID} factory-line --profile empty-user
+  ```
+
+  Add a profile by copying `factory-lines/production-reproducibility/profiles/_template.json`. Do not apply a profile without checking other slots — it replaces notes for everyone on this machine. Authoring guide: `.har/factory-lines/README.md`.
 
 ## Definition of done
 

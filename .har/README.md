@@ -14,6 +14,8 @@ Generated and maintained by [`har`](https://github.com/os-factory/har). Run `har
 | `manifest.json` | Generator metadata (version, checksums) — do not edit |
 | `harness.env` | Shared config: primary app, ports, agent slot limits, Supabase project id, `har_pg` helper |
 | `stages.json` | Machine-readable registry of runnable harness stages |
+| `factory-lines.json` | Named pipelines (factory lines) selected from task context |
+| `factory-lines/` | Factory-line runner, catalog, and seeding profiles |
 | `stages/` | Optional custom stage scripts registered from `stages.json` (currently just the `README.sh` placeholder) |
 | `runs/` | Run history from `har env` / MCP only — `.har/runs/YYYY-MM-DD/HH-mm-ss_<stageId>_agent-<id>.json` (gitignored) |
 | `state/supabase.env` | Resolved Supabase URLs/keys, written by `setup-infra.sh` from `supabase status` (gitignored) |
@@ -24,7 +26,7 @@ Generated and maintained by [`har`](https://github.com/os-factory/har). Run `har
 | `readiness.sh` | "Agent usable" smoke test — frontend wired to Supabase + real sign-up works |
 | `verify.sh` | Verification pipeline (smoke by default; `--full` adds lint, readiness, registered stages) |
 | `teardown.sh` | Tear down one agent slot (keeps the shared Supabase stack running) |
-| `agent-cli.sh` | Manage a running agent (status, logs, psql, health, url, reset-db) |
+| `agent-cli.sh` | Manage a running agent (status, logs, psql, health, url, reset-db, factory-line) |
 | `attach.sh` | Attach to agent tmux session |
 | `docker-compose.agent.yml` | Intentionally empty (`services: {}`) — Supabase CLI manages its own containers; see below |
 | `env.template` | Per-agent env vars, incl. `NEXT_PUBLIC_SUPABASE_*` (expanded by `launch.sh`) |
@@ -53,18 +55,19 @@ In Cursor with HAR MCP configured: use `har_launch_environment`, `har_run_verifi
 ./.har/setup-infra.sh         # starts the shared local Supabase stack (first run pulls Docker images)
 ./.har/launch.sh 1             # also runs setup-infra.sh for you
 ./.har/verify.sh 1              # quick: typecheck + health
-./.har/verify.sh 1 --full       # + lint, readiness smoke, browser-e2e (if installed)
+./.har/verify.sh 1 --full       # + lint, readiness smoke, factory-line-catalog
+./.har/agent-cli.sh 1 factory-line --list
 ./.har/teardown.sh 1
 ```
 
-Read **`stages.json`** for registered stages and **`verificationStages`** for the expected pass set.
+Read **`stages.json`** for registered stages and **`verificationStages`** for the expected pass set. Factory lines (task-context pipelines) are documented in [factory-lines/README.md](./factory-lines/README.md).
 
 ## Verification contract
 
 | Mode | Command | Steps |
 |------|---------|-------|
 | Quick | `har env verify <id>` or `verify.sh <id>` | `npm run typecheck` (`tsc --noEmit`) + `GET /api/health` |
-| Full | `har env verify <id> --full` or `verify.sh <id> --full` | + `npm run lint` (no `test` script exists — skipped), `readiness.sh` (Supabase-wired sign-up smoke), and any registered `browser-e2e` stage |
+| Full | `har env verify <id> --full` or `verify.sh <id> --full` | + `npm run lint` (no `test` script exists — skipped), `readiness.sh` (Supabase-wired sign-up smoke), `factory-line-catalog` (seeding profile schema + context routing), and any other registered `verificationStages` |
 
 Reuse of real project commands: `typecheck` and `lint` come straight from `package.json`. There is no `test` script in this starter kit — `verify.sh` prints a skip notice for that step rather than failing.
 
@@ -75,7 +78,7 @@ Install Playwright plugin: `har env add-plugin playwright` (optional, not instal
 | Layer | What it means | Where it's encoded |
 |-------|---------------|---------------------|
 | Infra ready | The shared local Supabase stack (Postgres, Auth, REST, Studio, Mailpit) is running | `setup-infra.sh`, `supabase/config.toml` |
-| Slot data ready | N/A — this app has no per-slot data store. The one shared Postgres/Auth instance is enough (no custom tables; only `auth.users`) | — |
+| Slot data ready | Named seeding profiles via the **production-reproducibility** factory line (empty user, user with notes, user with shared notes). Applying a profile truncates `notes` / `note_shares` on the shared Supabase. | `.har/factory-lines/`, `agent-cli.sh <id> factory-line` |
 | Process ready | The Next.js process for the slot is online and `/api/health` passes | `launch.sh`, `verify.sh` |
 | Agent usable | The running frontend is actually wired to Supabase (no env-var warning banner) and a real sign-up against the shared Auth API returns a session | `readiness.sh`, `HARNESS_READINESS_CMD`, `verify --full` |
 
@@ -99,6 +102,24 @@ With git worktree slots, verification runs code in the worktree but run JSON sta
 Prefer HAR MCP tools or `har env …` for launch, verify, and teardown. Use `./.har/*.sh` only when the CLI is not installed.
 
 Always use `./.har/agent-cli.sh <id> ...` — never hardcoded ports.
+
+## Factory lines
+
+Named pipelines selected from the task, registered in `factory-lines.json`.
+The first line is **production reproducibility**: it replaces `notes` /
+`note_shares` with a seeding profile (`empty-user`, `user-with-notes`,
+`user-with-shared-notes`) and ensures the matching Auth users exist.
+
+```bash
+./.har/agent-cli.sh <id> factory-line --list
+./.har/agent-cli.sh <id> factory-line --context "share a note with a teammate"
+./.har/agent-cli.sh <id> factory-line --profile empty-user
+```
+
+Add a profile by dropping a JSON file under
+`factory-lines/production-reproducibility/profiles/` — see
+[factory-lines/README.md](./factory-lines/README.md). Applying a profile
+mutates the **shared** database; check other slots first.
 
 ## Architecture
 

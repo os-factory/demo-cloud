@@ -1,0 +1,28 @@
+{
+  "id": "empty-user",
+  "title": "User with no notes",
+  "description": "A signed-in fixture user and an empty notes table — use for empty states, first-run, and onboarding work.",
+  "match": {
+    "keywords": [
+      "empty",
+      "no notes",
+      "zero notes",
+      "new user",
+      "blank",
+      "onboarding",
+      "first run",
+      "empty state"
+    ],
+    "priority": 15
+  },
+  "users": [
+    {
+      "key": "primary",
+      "email": "empty-user@example.com",
+      "password": "agent-demo-password-123",
+      "label": "User with an empty notes list",
+      "primary": true
+    }
+  ],
+  "notes": []
+}

@@ -1,0 +1,40 @@
+{
+  "id": "user-with-notes",
+  "title": "User with notes",
+  "description": "A signed-in fixture user whose workspace already has three notes. Default happy-path state for list/preview/editor work.",
+  "default": true,
+  "match": {
+    "keywords": [
+      "notes",
+      "tiptap",
+      "editor",
+      "preview",
+      "list notes",
+      "note title"
+    ],
+    "priority": 10
+  },
+  "users": [
+    {
+      "key": "primary",
+      "email": "notes-owner@example.com",
+      "password": "agent-demo-password-123",
+      "label": "Notes owner",
+      "primary": true
+    }
+  ],
+  "notes": [
+    {
+      "title": "Today I created a Supabase project.",
+      "slug": "today-i-created-a-supabase-project"
+    },
+    {
+      "title": "I added some data and queried it from Next.js.",
+      "slug": "i-added-some-data-and-queried-it-from-nextjs"
+    },
+    {
+      "title": "It was awesome!",
+      "slug": "it-was-awesome"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "YOUR-PROFILE-ID",
+  "title": "Short name shown to agents",
+  "description": "What this fixture looks like in the running app, and when to use it.",
+  "match": {
+    "keywords": ["phrase from typical tasks", "another trigger"],
+    "priority": 10
+  },
+  "users": [
+    {
+      "key": "primary",
+      "email": "your-profile@example.com",
+      "password": "agent-demo-password-123",
+      "label": "Who the agent should log in as",
+      "primary": true
+    }
+  ],
+  "notes": [
+    {
+      "title": "Example note title",
+      "slug": "example-note-title",
+      "shares": []
+    }
+  ]
+}

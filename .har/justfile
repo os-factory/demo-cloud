@@ -37,3 +37,6 @@ teardown-all:
 
 cli id cmd *args:
     ./agent-cli.sh {{id}} {{cmd}} {{args}}
+
+factory-line id *args:
+    ./factory-lines/run.sh {{id}} {{args}}

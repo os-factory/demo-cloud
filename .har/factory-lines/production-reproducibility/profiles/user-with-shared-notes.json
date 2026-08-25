@@ -1,0 +1,43 @@
+{
+  "id": "user-with-shared-notes",
+  "title": "User with shared notes",
+  "description": "An owner who has already shared one note with a recipient user, plus a second unshared note.",
+  "match": {
+    "keywords": [
+      "share",
+      "shared",
+      "recipient",
+      "viewer link",
+      "email share",
+      "teammate",
+      "private link"
+    ],
+    "priority": 20
+  },
+  "users": [
+    {
+      "key": "primary",
+      "email": "notes-owner@example.com",
+      "password": "agent-demo-password-123",
+      "label": "Notes owner (has shared a note)",
+      "primary": true
+    },
+    {
+      "key": "recipient",
+      "email": "notes-recipient@example.com",
+      "password": "agent-demo-password-123",
+      "label": "Person the note was shared with"
+    }
+  ],
+  "notes": [
+    {
+      "title": "A note shared with a teammate.",
+      "slug": "a-note-shared-with-a-teammate",
+      "shares": ["recipient"]
+    },
+    {
+      "title": "A private note that was never shared.",
+      "slug": "a-private-note-that-was-never-shared"
+    }
+  ]
+}

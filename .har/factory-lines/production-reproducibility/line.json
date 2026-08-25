@@ -1,0 +1,7 @@
+{
+  "id": "production-reproducibility",
+  "title": "Production reproducibility",
+  "description": "Replace notes/share rows with a named seeding profile and ensure the matching Auth users exist. Re-running the same profile yields the same domain state.",
+  "defaultProfile": "user-with-notes",
+  "profilesDir": "profiles"
+}

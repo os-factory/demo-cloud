@@ -6,6 +6,9 @@
     "min": 1,
     "max": 5
   },
+  "verificationStages": [
+    "factory-line-catalog"
+  ],
   "stages": [
     {
       "id": "setup-infra",
@@ -62,6 +65,42 @@
       "description": "Read recent logs for an agent slot",
       "command": "./.har/agent-cli.sh {agentId} logs",
       "artifacts": []
+    },
+    {
+      "id": "factory-line",
+      "kind": "custom",
+      "group": "factory-line",
+      "description": "Run a factory line (default: production-reproducibility seeding profile from task context)",
+      "script": "stages/factory-line.sh",
+      "artifacts": [
+        {
+          "path": ".har/artifacts/factory-line",
+          "kind": "directory",
+          "description": "Applied profile, SQL, and domain-state proof"
+        }
+      ],
+      "acceptsArgs": [
+        "--line",
+        "--profile",
+        "--context",
+        "--list",
+        "--dry-run",
+        "--verify-only"
+      ]
+    },
+    {
+      "id": "factory-line-catalog",
+      "kind": "test",
+      "group": "factory-line",
+      "description": "Validate factory-line registry, seeding profiles, and context routing (no database writes)",
+      "script": "stages/factory-line-catalog.sh",
+      "artifacts": [
+        {
+          "path": ".har/artifacts/factory-line-catalog",
+          "kind": "directory",
+          "description": "Catalog check output"
+        }
+      ]
     },
     {
       "id": "teardown",

@@ -81,6 +81,8 @@ create or refresh it.
 
 **Credentials:** a demo login is created idempotently — `agent-demo@example.com` / `agent-demo-password-123`. Email confirmation is disabled for local dev, so any new sign-up returns an active session immediately; password-reset emails land in Mailpit (`http://127.0.0.1:54324`), not a real inbox.
 
+**Factory lines:** after launch, run a task-specific pipeline. The first line is **production reproducibility** — it seeds the shared database into a named profile (`empty-user`, `user-with-notes`, `user-with-shared-notes`). Pick one from the task (`./.har/agent-cli.sh <id> factory-line --context "..."`) or pass `--profile`. Adding a profile is a JSON file under `.har/factory-lines/production-reproducibility/profiles/` — see [`.har/factory-lines/README.md`](.har/factory-lines/README.md). Applying a profile truncates `notes` / `note_shares` for every slot.
+
 **Definition of done:** full verify passes (typecheck, lint, `/api/health`, and the readiness smoke in `.har/readiness.sh`, which signs up a real user against the shared Supabase Auth API to prove the frontend is actually wired to it). See [`.har/CLAUDE.agent.md`](.har/CLAUDE.agent.md) for the full checklist.
 
 <!-- BEGIN:nextjs-agent-rules -->
