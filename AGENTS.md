@@ -54,11 +54,13 @@ Commit in the session worktree. Run JSON stays in the main checkout `.har/runs/`
 ### Session handoff (required)
 
 After full verify and commit, stop. Include summary, session branch
-(`.har/slots/agent-<id>.json`), and preview URLs. Wait — never autonomously
-complete, teardown, push, or open a PR. **Default:** when `gh`/GitHub MCP is available,
-recommend **Complete + open a PR** (still needs approval). Alternatives: **Complete only**,
-or **Something else**. Without PR tooling, recommend **Complete only** and give the
-session branch for a manual push.
+(`.har/slots/agent-<id>.json`), preview URLs, and **screenshots of the requested
+UI changes** from `.har/artifacts/browser-e2e/handoff/` (Read each PNG so it
+appears in chat). Wait — never autonomously complete, teardown, push, or open a PR.
+**Default:** when `gh`/GitHub MCP is available, recommend **Complete + open a PR**
+(still needs approval). Alternatives: **Complete only**, or **Something else**.
+Without PR tooling, recommend **Complete only** and give the session branch for a
+manual push.
 
 ### Commit gate
 
@@ -83,7 +85,7 @@ create or refresh it.
 
 **Factory lines:** after launch, run a task-specific pipeline. The first line is **production reproducibility** — it seeds the shared database into a named profile (`empty-user`, `user-with-notes`, `user-with-shared-notes`). Pick one from the task (`./.har/agent-cli.sh <id> factory-line --context "..."`) or pass `--profile`. Adding a profile is a JSON file under `.har/factory-lines/production-reproducibility/profiles/` — see [`.har/factory-lines/README.md`](.har/factory-lines/README.md). Applying a profile truncates `notes` / `note_shares` for every slot.
 
-**Definition of done:** full verify passes (typecheck, lint, `/api/health`, and the readiness smoke in `.har/readiness.sh`, which signs up a real user against the shared Supabase Auth API to prove the frontend is actually wired to it). See [`.har/CLAUDE.agent.md`](.har/CLAUDE.agent.md) for the full checklist.
+**Definition of done:** full verify passes (typecheck, lint, `/api/health`, the readiness smoke in `.har/readiness.sh`, factory-line-catalog, and the Playwright `browser-e2e` stage). UI changes must add or update specs under `tests/` and capture a named handoff screenshot (`handoffScreenshot` from `tests/helpers/fixtures.js`). Show those PNGs from `.har/artifacts/browser-e2e/handoff/` in the session handoff. See [`.har/CLAUDE.agent.md`](.har/CLAUDE.agent.md) and [`.har/stages/PLAYWRIGHT.md`](.har/stages/PLAYWRIGHT.md).
 
 <!-- BEGIN:nextjs-agent-rules -->
 

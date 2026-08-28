@@ -1,0 +1,14 @@
+{
+  "version": "1",
+  "plugins": [
+    {
+      "id": "playwright",
+      "source": "bundled",
+      "spec": "playwright",
+      "stageIds": [
+        "browser-e2e"
+      ],
+      "installedAt": "2026-08-28T09:40:58.573Z"
+    }
+  ]
+}

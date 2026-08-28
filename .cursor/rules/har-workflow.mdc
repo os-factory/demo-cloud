@@ -55,7 +55,9 @@ Prefer MCP → CLI → shell. Quick verify for the loop; **full verify before do
 - Shell: `./.har/verify.sh 1`, `./.har/verify.sh 1 --full`, `./.har/teardown.sh 1`
 
 Commit in the session worktree. Run JSON stays in the main checkout `.har/runs/`.
-UI changes with Playwright: update specs under `tests/` (full verify includes browser-e2e).
+UI changes with Playwright: update specs under `tests/` (full verify includes
+browser-e2e). Capture a named screenshot of every changed screen with
+`handoffScreenshot('<what-changed>')` from `tests/helpers/fixtures.js`.
 
 ## Definition of done
 
@@ -65,12 +67,15 @@ UI changes with Playwright: update specs under `tests/` (full verify includes br
 ## Session handoff (required)
 
 After full verify and commit, stop. Include summary, session branch
-(`.har/slots/agent-<id>.json`), and preview URLs. Wait — never autonomously
-complete, teardown, push, or open a PR. **Default (1 is the default):** when
-`gh`/GitHub MCP is available, recommend **Complete + open a PR** — push → open
-PR → `har env complete` / `har_complete_environment` (branch kept). Still needs
-approval. Alternatives: **Complete only**, or **Something else**. Without PR
-tooling, recommend **Complete only** and give the session branch for a manual push.
+(`.har/slots/agent-<id>.json`), preview URLs, and **screenshots of the
+requested UI changes**. Read each PNG under `.har/artifacts/browser-e2e/handoff/`
+so the images appear in this message — do not describe them instead of showing
+them. Wait — never autonomously complete, teardown, push, or open a PR.
+**Default (1 is the default):** when `gh`/GitHub MCP is available, recommend
+**Complete + open a PR** — push → open PR → `har env complete` /
+`har_complete_environment` (branch kept). Still needs approval. Alternatives:
+**Complete only**, or **Something else**. Without PR tooling, recommend
+**Complete only** and give the session branch for a manual push.
 
 ## Commit gate
 

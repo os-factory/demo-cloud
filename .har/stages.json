@@ -7,7 +7,12 @@
     "max": 5
   },
   "verificationStages": [
-    "factory-line-catalog"
+    "factory-line-catalog",
+    "typecheck",
+    "unit-tests",
+    "api-health",
+    "lint",
+    "browser-e2e"
   ],
   "stages": [
     {
@@ -33,7 +38,7 @@
     {
       "id": "verify",
       "kind": "verify",
-      "description": "Verification pipeline (quick smoke by default; --full runs the registry's verificationStages)",
+      "description": "Verification pipeline (quick smoke by default; --full runs the registry's verificationStages: factory-line-catalog, typecheck, unit-tests, api-health, lint, browser-e2e)",
       "command": "./.har/verify.sh {agentId}",
       "artifacts": [
         {
@@ -69,7 +74,6 @@
     {
       "id": "factory-line",
       "kind": "custom",
-      "group": "factory-line",
       "description": "Run a factory line (default: production-reproducibility seeding profile from task context)",
       "script": "stages/factory-line.sh",
       "artifacts": [
@@ -79,6 +83,7 @@
           "description": "Applied profile, SQL, and domain-state proof"
         }
       ],
+      "group": "factory-line",
       "acceptsArgs": [
         "--line",
         "--profile",
@@ -91,7 +96,6 @@
     {
       "id": "factory-line-catalog",
       "kind": "test",
-      "group": "factory-line",
       "description": "Validate factory-line registry, seeding profiles, and context routing (no database writes)",
       "script": "stages/factory-line-catalog.sh",
       "artifacts": [
@@ -100,7 +104,8 @@
           "kind": "directory",
           "description": "Catalog check output"
         }
-      ]
+      ],
+      "group": "factory-line"
     },
     {
       "id": "teardown",
@@ -108,6 +113,29 @@
       "description": "Stop processes and release agent slot resources",
       "command": "./.har/teardown.sh {agentId}",
       "artifacts": []
+    },
+    {
+      "id": "browser-e2e",
+      "kind": "test",
+      "description": "Playwright E2E (frontend + API + a11y)",
+      "script": "stages/browser-e2e.sh",
+      "artifacts": [
+        {
+          "path": ".har/artifacts/browser-e2e",
+          "kind": "directory",
+          "description": "HTML report, traces, screenshots, videos"
+        },
+        {
+          "path": ".har/artifacts/browser-e2e/handoff",
+          "kind": "directory",
+          "description": "Named PNGs of changed UI for the session handoff"
+        },
+        {
+          "path": ".har/artifacts/browser-e2e/playwright-report",
+          "kind": "report"
+        }
+      ],
+      "requiresAgentId": true
     }
   ],
   "commitGate": {

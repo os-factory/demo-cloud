@@ -20,6 +20,8 @@ const eslintConfig = [
       ".har/**",
       "supabase/.temp/**",
       "ecosystem.agent.*.config.cjs",
+      "tests/**",
+      "playwright.config.js",
     ],
   },
   ...compat.extends("next/core-web-vitals", "next/typescript"),

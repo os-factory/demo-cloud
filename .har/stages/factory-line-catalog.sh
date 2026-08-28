@@ -36,7 +36,7 @@ if [ ! -f "$CATALOG_HAR/factory-lines.json" ]; then
 fi
 
 MAIN_ROOT="$REPO_ROOT"
-git_common="$(git -C "$REPO_ROOT" rev-parse --git-common-dir 2>/dev/null || true)"
+git_common="$(git_common_dir "$REPO_ROOT" || true)"
 if [ -n "$git_common" ]; then
   MAIN_ROOT="$(cd "$git_common/.." && pwd)"
 fi

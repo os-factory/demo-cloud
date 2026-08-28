@@ -71,7 +71,7 @@ Read **`stages.json`** for registered stages and **`verificationStages`** for th
 
 Reuse of real project commands: `typecheck` and `lint` come straight from `package.json`. There is no `test` script in this starter kit — `verify.sh` prints a skip notice for that step rather than failing.
 
-Install Playwright plugin: `har env add-plugin playwright` (optional, not installed by default). UI changes should add or update specs under `tests/`.
+Playwright is installed (`browser-e2e` in `verificationStages`). UI changes must add or update specs under `tests/` and capture a named handoff screenshot (`handoffScreenshot` from `tests/helpers/fixtures.js`). Full verify writes PNGs to `.har/artifacts/browser-e2e/handoff/` — show those in the session handoff. See [`.har/stages/PLAYWRIGHT.md`](./stages/PLAYWRIGHT.md).
 
 ## Readiness layers
 

@@ -232,13 +232,19 @@ run_http_step "health" "http://localhost:${FE_PORT}${HARNESS_HEALTH_CHECK_PATH}"
 if [ -n "$FULL" ]; then
   run_full_checks
   run_step "readiness" "run_readiness_if_configured \"$AGENT_ID\"" || true
+  # Prefer the session worktree registry so plugin/stage edits in this
+  # session run before they land on the main checkout.
+  VERIFY_HAR="$WORK_DIR/.har"
+  if [ ! -f "$VERIFY_HAR/stages.json" ]; then
+    VERIFY_HAR="$SCRIPT_DIR"
+  fi
   # Registered verification stages from .har/stages.json (see .har/STAGES.md).
   # Every stage listed in verificationStages with a registered script/command
   # runs here -- plugins and custom stages alike.
   while IFS=$'\t' read -r STAGE_ID STAGE_CMD; do
     [ -n "$STAGE_ID" ] || continue
     run_step "$STAGE_ID" "$STAGE_CMD" || true
-  done < <(list_registered_verification_stage_commands "$SCRIPT_DIR" "$AGENT_ID")
+  done < <(list_registered_verification_stage_commands "$VERIFY_HAR" "$AGENT_ID")
 fi
 
 # ── Output results ────────────────────────────────────────────────────────────

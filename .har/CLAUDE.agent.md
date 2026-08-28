@@ -60,22 +60,27 @@ Sign-up/sign-in also works for any new email — **email confirmation is disable
 
 - [ ] Full verification returns `"status": "pass"` (`har env verify ${AGENT_ID} --full`, MCP `har_run_verification` with `full: true`, or `./.har/verify.sh ${AGENT_ID} --full`)
 - [ ] The slot is agent-usable: sign up or log in (demo login above) through the running frontend actually works
-- [ ] Full verify runs every registered stage in `stages.json` `verificationStages` (Playwright, custom checks, …) — when `stages/browser-e2e.sh` exists, adapt specs under `tests/` for UI changes
+- [ ] Full verify runs every registered stage in `stages.json` `verificationStages` (Playwright `browser-e2e`, factory-line-catalog, …) — adapt specs under `tests/` for UI changes
 - [ ] New behavior has automated test coverage (unit and/or browser as appropriate)
+- [ ] UI changes captured a named Playwright screenshot via `handoffScreenshot` (`tests/helpers/fixtures.js`)
 - [ ] Changes committed **in the session worktree** with a clear message
 - [ ] The user got the preview URL to test the app themselves
-- [ ] Present session handoff (summary, branch, preview URL) and **wait for user** before `complete`, push, or PR
+- [ ] Present session handoff (summary, branch, preview URL, **handoff screenshots**) and **wait for user** before `complete`, push, or PR
 - [ ] On user approval of the default: push + open PR (when `gh`/GitHub MCP available), then `har env complete ${AGENT_ID}` (or MCP `har_complete_environment`) — full verify + validation + teardown, branch kept
 
 ### Session handoff
 
 After full verify and commit, stop and propose next steps. Never autonomously run
-`complete`, `teardown`, `git push`, or open a PR. **Default recommendation:** when
-`gh` or GitHub MCP is available, complete the slot **and** open a PR (push → PR →
-`har env complete` / `har_complete_environment`). Offer complete-only or something
-else as alternatives. If PR tooling is unavailable, recommend complete and report
-the session branch for a manual push. Prefer `complete` over bare `teardown` when
-the work succeeded. See `.cursor/rules/har-workflow.mdc` for the handoff shape.
+`complete`, `teardown`, `git push`, or open a PR. Include **screenshots of the
+requested UI changes**: Read each PNG under `.har/artifacts/browser-e2e/handoff/`
+so the images appear in the handoff — do not describe them instead of showing
+them. **Default recommendation:** when `gh` or GitHub MCP is available, complete
+the slot **and** open a PR (push → PR → `har env complete` /
+`har_complete_environment`). Offer complete-only or something else as
+alternatives. If PR tooling is unavailable, recommend complete and report the
+session branch for a manual push. Prefer `complete` over bare `teardown` when
+the work succeeded. See `.cursor/rules/har-workflow.mdc` and
+`.har/stages/PLAYWRIGHT.md` for the handoff shape.
 
 Quick loop during development: MCP `har_run_verification`, `har env verify ${AGENT_ID}`, or `./.har/verify.sh ${AGENT_ID}` (smoke + health only; `--full` adds the registered verification stages).
 
